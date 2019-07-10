@@ -10,10 +10,7 @@ import { CategoriesService } from '../services/categories.service';
 
 @Controller('api/categories')
 export class CategoriesController {
-    constructor(
-        private readonly categoriesService: CategoriesService,
-        private readonly categoriesMapper: CategoriesMapper,
-    ) {}
+    constructor(private readonly categoriesService: CategoriesService) {}
 
     @Post()
     async createCategory(@Body() createCategoryRequest: CreateCategoryRequestDto): Promise<CreateCategoryResponseDto> {
