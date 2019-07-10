@@ -166,3 +166,5 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Output files
+/dist/
