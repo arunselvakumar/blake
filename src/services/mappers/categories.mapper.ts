@@ -4,11 +4,11 @@ import { UpdateCategoryRequestDto } from '../models/dtos/category/request/update
 import { CreateCategoryResponseDto } from '../models/dtos/category/response/create-category.response.dto';
 import { GetCategoryResponseDto } from '../models/dtos/category/response/get-category.response.dto';
 import { UpdateCategoryResponseDto } from '../models/dtos/category/response/update-category.response.dto';
-import { CategoryEntityModel } from '../models/entity/category.entity.model';
+import { CategoryEntityModel } from '../models/entities/category.entity.model';
 
 @Injectable()
 export class CategoriesMapper {
-    static mapFromCreateCategoryRequestDtoToEntity(createCategoryDto: CreateCategoryRequestDto): CategoryEntityModel {
+    public static mapFromCreateCategoryRequestDtoToEntity(createCategoryDto: CreateCategoryRequestDto): CategoryEntityModel {
         // @ts-ignore
         return {
             name: createCategoryDto.name,
@@ -18,7 +18,7 @@ export class CategoriesMapper {
         };
     }
 
-    static mapFromUpdateCategoryRequestDtoToEntity(updateCategoryDto: UpdateCategoryRequestDto): CategoryEntityModel {
+    public static mapFromUpdateCategoryRequestDtoToEntity(updateCategoryDto: UpdateCategoryRequestDto): CategoryEntityModel {
         // @ts-ignore
         return {
             name: updateCategoryDto.name,
@@ -28,7 +28,7 @@ export class CategoriesMapper {
         };
     }
 
-    static mapFromCategoryEntityToCreateCategoryResponseDto(categoryEntity: CategoryEntityModel): CreateCategoryResponseDto {
+    public static mapFromCategoryEntityToCreateCategoryResponseDto(categoryEntity: CategoryEntityModel): CreateCategoryResponseDto {
         return {
             id: categoryEntity._id,
             name: categoryEntity.name,
@@ -36,7 +36,7 @@ export class CategoriesMapper {
         };
     }
 
-    static mapFromCategoryEntityToGetCategoryResponseDto(categoryEntity: CategoryEntityModel): GetCategoryResponseDto {
+    public static mapFromCategoryEntityToGetCategoryResponseDto(categoryEntity: CategoryEntityModel): GetCategoryResponseDto {
         return {
             id: categoryEntity._id,
             name: categoryEntity.name,
@@ -44,7 +44,7 @@ export class CategoriesMapper {
         };
     }
 
-    static mapFromCategoryEntityToUpdateCategoryResponseDto(categoryEntity: CategoryEntityModel): UpdateCategoryResponseDto {
+    public static mapFromCategoryEntityToUpdateCategoryResponseDto(categoryEntity: CategoryEntityModel): UpdateCategoryResponseDto {
         return {
             id: categoryEntity._id,
             name: categoryEntity.name,
