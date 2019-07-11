@@ -19,7 +19,7 @@ export class AuthenticationService {
         ]
         
         return await this.httpService.get(graphQLUrlFormat, null, queryParam)
-            .toPromise().then(response => response.data);
+            .toPromise().then(res => res.data);
     }
 
     async getAccountDetails(accessToken: string) {
@@ -29,6 +29,6 @@ export class AuthenticationService {
         ]
 
         return await this.httpService.get(meEndPointUrl, null, queryParam)
-            .toPromise().then(response => response.data);
+            .toPromise().then(res => res.data);
     }
 }

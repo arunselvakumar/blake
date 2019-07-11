@@ -13,9 +13,8 @@ export class HttpclientService {
     */
     get(
         urlFormat: string,
-        params: { key: string, value: string }[],
+        params: { key: string, value: string }[], 
         queryparams: { key: string, value: string }[]) {
-            
         if (params) {
             params.forEach(param => {
                 var formattedParam = "{" + param.key + "}";
