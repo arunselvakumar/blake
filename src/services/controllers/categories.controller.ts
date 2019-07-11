@@ -13,26 +13,28 @@ export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
     @Post()
-    async createCategory(@Body() createCategoryRequest: CreateCategoryRequestDto): Promise<CreateCategoryResponseDto> {
+    public async createCategory(
+        @Body() createCategoryRequest: CreateCategoryRequestDto,
+    ): Promise<CreateCategoryResponseDto> {
         const mappedEntity = CategoriesMapper.mapFromCreateCategoryRequestDtoToEntity(createCategoryRequest);
         const serviceResult = await this.categoriesService.createCategory(mappedEntity);
         return CategoriesMapper.mapFromCategoryEntityToCreateCategoryResponseDto(serviceResult);
     }
 
     @Get()
-    async getAllCategories(): Promise<GetCategoryResponseDto[]> {
+    public async getAllCategories(): Promise<GetCategoryResponseDto[]> {
         const serviceResult = await this.categoriesService.getAllCategories();
         return serviceResult.map(x => CategoriesMapper.mapFromCategoryEntityToGetCategoryResponseDto(x));
     }
 
     @Get(':categoryId')
-    async getCategory(@Param('categoryId') categoryId: string): Promise<GetCategoryResponseDto> {
+    public async getCategory(@Param('categoryId') categoryId: string): Promise<GetCategoryResponseDto> {
         const serviceResult = await this.categoriesService.getCategoryById(categoryId);
         return CategoriesMapper.mapFromCategoryEntityToGetCategoryResponseDto(serviceResult);
     }
 
     @Patch(':categoryId')
-    async updateCategory(
+    public async updateCategory(
         @Param('categoryId') categoryId: string,
         @Body() updateCategoryRequest: UpdateCategoryRequestDto,
     ): Promise<UpdateCategoryResponseDto> {
@@ -42,7 +44,7 @@ export class CategoriesController {
     }
 
     @Delete(':categoryId')
-    async deleteCategory(@Param('categoryId') categoryId: string): Promise<void> {
+    public async deleteCategory(@Param('categoryId') categoryId: string): Promise<void> {
         return await this.categoriesService.deleteCategory(categoryId);
     }
 }
