@@ -11,7 +11,10 @@ export class HttpclientService {
     * params        -> key value pair for url params <id, idvalue>
     * queryparams   -> key value pair for url params <query, queryvalue> will be concatenated with final url.
     */
-    get(urlFormat: string, params: { key: string, value: string }[], queryparams: { key: string, value: string }[]) {
+    get(
+        urlFormat: string,
+        params: { key: string, value: string }[], 
+        queryparams: { key: string, value: string }[]) {
         if (params) {
             params.forEach(param => {
                 var formattedParam = "{" + param.key + "}";

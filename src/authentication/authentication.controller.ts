@@ -1,7 +1,7 @@
 import { Controller, Get, Res, Query, HttpStatus } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 
-@Controller('authentication')
+@Controller('api/authentication')
 export class AuthenticationController {
     /**
      * Constructor
@@ -15,8 +15,8 @@ export class AuthenticationController {
     }
 
     @Get('/accountDetails')
-    async getAccountDetails(@Res() res, @Query() query) {
+    async getAccountDetails(@Query() query) {
         const accountDetail = await this.authenticationService.getAccountDetails(query.accessToken);
-        return res.status(HttpStatus.OK).json(accountDetail);
+        return accountDetail;
     }
 }
