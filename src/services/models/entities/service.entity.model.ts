@@ -1,1 +1,3 @@
-export interface ServiceEntityModel {}
+export interface ServiceEntityModel {
+    name: string;
+}
