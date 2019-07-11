@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, UnauthorizedException } from '@nestjs/common';
 
 import { GetServicesResponseDto } from '../models/dtos/get-services.response.dto';
 import { AuthenticationService } from '../../shared/services/authentication.service';
@@ -7,13 +7,17 @@ import { AuthenticationService } from '../../shared/services/authentication.serv
 export class ServicesController {
     constructor(private readonly authenticationService: AuthenticationService) {}
 
-    @Get()
-    getAllServices(): GetServicesResponseDto {
-        return null;
-    }
-
     @Post()
     createService(): string {
+        // Replace with https://docs.nestjs.com/techniques/authentication
+        if (this.authenticationService.getUserDetails('')) {
+        }
+
+        throw new UnauthorizedException();
+    }
+
+    @Get()
+    getAllServices(): GetServicesResponseDto {
         return null;
     }
 }
