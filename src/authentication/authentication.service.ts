@@ -1,6 +1,5 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpclientService } from '../httpclient/httpclient.service';
-import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthenticationService {
@@ -8,9 +7,7 @@ export class AuthenticationService {
      * Constructor
      */
     constructor(
-        private httpService: HttpclientService,
-        private defaultHttpService : HttpService
-        ) { }
+        private httpService: HttpclientService) { }
 
     async getAccessToken(authCode: string) {
         var app_access_token = ['AA', '2511892505501421', '5895d76ce2aac16fc1aa92e643dd03cb'].join('%7C');
@@ -22,16 +19,7 @@ export class AuthenticationService {
         ]
         
         return await this.httpService.get(graphQLUrlFormat, null, queryParam)
-            .toPromise()
-            .then((res) =>{
-                if(res.status === 200){
-                    return res.data;
-                }
-                else{
-                    console.log("failed");
-                    return null;
-                }
-            });
+            .toPromise().then(response => response.data);
     }
 
     async getAccountDetails(accessToken: string) {
@@ -41,15 +29,6 @@ export class AuthenticationService {
         ]
 
         return await this.httpService.get(meEndPointUrl, null, queryParam)
-            .toPromise()
-            .then((res) =>{
-                if(res.status === 200){
-                    return res.data;
-                }
-                else{
-                    console.log("failed");
-                    return null;
-                }
-            });
+            .toPromise().then(response => response.data);
     }
 }
