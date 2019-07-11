@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Model } from 'mongoose';
 
-import { CategoryEntityModel } from '../models/entity/category.entity.model';
+import { CategoryEntityModel } from '../models/entities/category.entity.model';
 import { DB_ERRORS } from '../utils/constants';
 
 @Injectable()
