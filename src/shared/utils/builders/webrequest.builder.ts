@@ -1,4 +1,4 @@
-import {WebRequest, Method, ParameterModel} from '../../../shared/models/webrequest/webrequest.model';
+import {WebRequest, Method, ParameterModel} from '../../models/webrequest/webrequest.model';
 
 export class WebRequestBuilder{
 

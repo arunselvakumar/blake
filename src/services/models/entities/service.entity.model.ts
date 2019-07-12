@@ -1,5 +1,17 @@
 import * as mongoose from 'mongoose';
 
+const pointSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['Point'],
+        required: true,
+    },
+    coordinates: {
+        type: [Number],
+        required: true,
+    },
+});
+
 export const ServiceEntitySchema = new mongoose.Schema({
     name: { type: String, required: true },
     phone: { type: String, required: true },
@@ -8,28 +20,30 @@ export const ServiceEntitySchema = new mongoose.Schema({
     isOffline: { type: Boolean },
     categoryId: { type: String },
     location: {
-        type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
-            required: true
-        },
-        coordinates: {
-            type: [Number],
-            required: true
-        },
-        required: true
-    }
-})
+        type: pointSchema,
+        required: true,
+    },
+});
+
+// {
+// 	"location": {
+// 		"type": "Point",
+// 		"coordinates": {
+// 			"type": [-104.9903, 39.7392]
+// 		}
+// 	},
+// }
 
 export interface ServiceEntityModel extends mongoose.Document {
-    readonly name: string,
-    readonly phone: string,
-    readonly upTime: number,
-    readonly serviceableDistance: string,
-    readonly isOffline: boolean,
-    readonly categoryId: string,
-    readonly location: {
-        type: { type: "Point" },
-        coordinates: [number]
-    }
+    name: string;
+    phone: string;
+    upTime: number;
+    serviceableDistance: string;
+    isOffline: boolean;
+    categoryId: string;
+    location: any;
+    // {
+    //     type: { type: `Point` },
+    //     coordinates: number[],
+    // };
 }
