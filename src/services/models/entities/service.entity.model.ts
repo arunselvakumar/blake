@@ -6,6 +6,7 @@ export const ServiceEntitySchema = new mongoose.Schema({
     upTime: { type: Number },
     servicableDistance: { type: Number },
     isOffline: { type: Boolean },
+    categoryId: { type: String },
     location: {
         type: {
             type: String, // Don't do `{ location: { type: String } }`
@@ -21,13 +22,14 @@ export const ServiceEntitySchema = new mongoose.Schema({
 })
 
 export interface ServiceEntityModel extends mongoose.Document {
-    readonly name : string,
+    readonly name: string,
     readonly phone: string,
     readonly upTime: number,
     readonly serviceableDistance: string,
     readonly isOffline: boolean,
-    readonly location : {
-        type: {type: "Point"},
+    readonly categoryId: string,
+    readonly location: {
+        type: { type: "Point" },
         coordinates: [number]
     }
 }
