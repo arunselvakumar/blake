@@ -1,19 +1,16 @@
-import { Controller, Get, Post, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
 
-import { GetServicesResponseDto } from '../models/dtos/get-services.response.dto';
-import { AuthenticationService } from '../../shared/services/authentication.service';
+import { AuthGuard } from '@nestjs/passport';
+import { GetServicesResponseDto } from '../models/dtos/service/response/get-services.response.dto';
 
 @Controller('api/services')
 export class ServicesController {
-    constructor(private readonly authenticationService: AuthenticationService) {}
-
     @Post()
-    createService(): string {
-        // Replace with https://docs.nestjs.com/techniques/authentication
-        if (this.authenticationService.getUserDetails('')) {
-        }
-
-        throw new UnauthorizedException();
+    @UseGuards(AuthGuard('bearer'))
+    async createService(@Req() request: Request): Promise<string> {
+        // @ts-ignore
+        const { user } = request;
+        return user;
     }
 
     @Get()
