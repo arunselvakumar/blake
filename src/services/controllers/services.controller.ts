@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req, Request, UseGuards } from '@nestjs/common';
-
 import { AuthGuard } from '@nestjs/passport';
+
 import { GetServicesResponseDto } from '../models/dtos/service/response/get-services.response.dto';
 
 @Controller('api/services')
