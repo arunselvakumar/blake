@@ -7,6 +7,7 @@ export class ReviewsAdapter {
         return {
             userId,
             serviceId,
+            rating: addReviewRequestDto.rating,
             content: addReviewRequestDto.content,
             isArchived: false,
             modifiedOn: new Date(),
