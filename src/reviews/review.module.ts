@@ -7,11 +7,12 @@ import { ReviewsController } from './controllers/reviews.controller';
 import { ReviewSchema } from './models/entities/review.entity.model';
 import { ReviewsValidationProvider } from './providers/reviews-validation.provider';
 import { ReviewsService } from './services/reviews.service';
+import { AddReviewsValidator } from './validators/add-reviews.validator';
 import { DeleteReviewsValidator } from './validators/delete-reviews.validator';
 
 @Module({
     controllers: [ReviewsController],
-    providers: [ReviewsService, DeleteReviewsValidator, ReviewsValidationProvider],
+    providers: [ReviewsService, AddReviewsValidator, DeleteReviewsValidator, ReviewsValidationProvider],
     imports: [SharedModule, PassportModule, MongooseModule.forFeature([{ name: 'Review', schema: ReviewSchema }])],
 })
 export class ReviewModule {}

@@ -26,7 +26,11 @@ export class ReviewsService {
         }
     }
 
-    public async getReviewsForService(serviceId: string, page: number = 1, limit: number = 3): Promise<ReviewEntityModel[]> {
+    public async getReviewsForService(
+        serviceId: string,
+        page: number = 1,
+        limit: number = 3,
+    ): Promise<ReviewEntityModel[]> {
         try {
             const options = {
                 page: Number(page),
@@ -37,6 +41,14 @@ export class ReviewsService {
             return entityResult.docs;
         } catch {
             throw new NotFoundException(DB_ERRORS.NotFound);
+        }
+    }
+
+    public async getReviewsForServiceByUserId(serviceId: string, userId: string): Promise<ReviewEntityModel[]> {
+        try {
+            return await this.reviewModel.find({ serviceId, userId, isArchived: false }).exec();
+        } catch {
+            return [];
         }
     }
 
