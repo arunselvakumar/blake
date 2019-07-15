@@ -7,7 +7,7 @@ import { ReviewsService } from '../services/reviews.service';
 
 @Injectable()
 export class AddReviewsValidator {
-    isToday = date => {
+    isToday = (date: Date) => {
         const today = new Date();
         return (
             date.getDate() === today.getDate() &&
