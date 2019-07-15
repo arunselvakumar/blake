@@ -1,15 +1,20 @@
-export interface UserEntityModel {
-    id: string;
-    phone: Phone;
-    application: Application;
-}
+import * as mongoose from 'mongoose';
 
-export interface Application {
-    id: string;
-}
+export const UserSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    firstName: { type: String, required: false },
+    lastName: { type: String, required: false },
+    email: { type: String, required: false },
+    bio: { type: String, required: false },
+    dateOfBirth: { type: Date, required: false },
+});
 
-export interface Phone {
-    number: string;
-    country_prefix: string;
-    national_number: string;
+export interface UserEntityModel extends mongoose.Document {
+    id: string;
+    userId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    bio: string;
+    dateOfBirth: Date;
 }

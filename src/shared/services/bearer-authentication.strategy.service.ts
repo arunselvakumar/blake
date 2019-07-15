@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { Strategy } from 'passport-http-bearer';
 
-import { UserEntityModel } from '../models/entities/user.entity.model';
+import { UserIdentityEntityModel } from '../models/entities/user-identity.entity.model';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class BearerAuthenticationStrategy extends PassportStrategy(Strategy) {
         super();
     }
 
-    public async validate(token: string): Promise<UserEntityModel> {
+    public async validate(token: string): Promise<UserIdentityEntityModel> {
         const user = await this.authenticationService.getUserDetails(token);
 
         if (!user) {
