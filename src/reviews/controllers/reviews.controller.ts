@@ -25,6 +25,8 @@ export class ReviewsController {
     ): Promise<AddReviewResponseDto> {
         // @ts-ignore
         const { user } = request;
+
+        await this.validationProvider.addValidator.validate(serviceId, user.id, addReviewRequest);
         const addReviewEntity = ReviewsAdapter.getReviewsEntityModel(user.id, serviceId, addReviewRequest);
         const serviceResult = await this.reviewsService.addReview(addReviewEntity);
         return ReviewsMapper.mapFromReviewEntityToAddReviewResponseDto(serviceResult);
