@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Model } from 'mongoose';
 
+import { DB_ERRORS } from '../../shared/utils/constants';
 import { CategoryEntityModel } from '../models/entities/category.entity.model';
-import { DB_ERRORS } from '../utils/constants';
 
 @Injectable()
 export class CategoriesService {
@@ -49,9 +49,9 @@ export class CategoriesService {
 
     public async deleteCategory(categoryId: string): Promise<void> {
         try {
-            const entityToBeUpdated = await this.categoryModel.findById(categoryId).exec();
-            entityToBeUpdated.isArchived = true;
-            await this.categoryModel.findByIdAndUpdate(categoryId, entityToBeUpdated);
+            const entityToBeDeleted = await this.categoryModel.findById(categoryId).exec();
+            entityToBeDeleted.isArchived = true;
+            await this.categoryModel.findByIdAndUpdate(categoryId, entityToBeDeleted);
         } catch {
             throw new NotFoundException(DB_ERRORS.NotFound);
         }

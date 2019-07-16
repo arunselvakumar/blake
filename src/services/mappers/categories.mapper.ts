@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { CreateCategoryRequestDto } from '../models/dtos/category/request/create-category.request.dto';
 import { UpdateCategoryRequestDto } from '../models/dtos/category/request/update-category.request.dto';
 import { CreateCategoryResponseDto } from '../models/dtos/category/response/create-category.response.dto';
@@ -6,7 +5,6 @@ import { GetCategoryResponseDto } from '../models/dtos/category/response/get-cat
 import { UpdateCategoryResponseDto } from '../models/dtos/category/response/update-category.response.dto';
 import { CategoryEntityModel } from '../models/entities/category.entity.model';
 
-@Injectable()
 export class CategoriesMapper {
     public static mapFromCreateCategoryRequestDtoToEntity(createCategoryDto: CreateCategoryRequestDto): CategoryEntityModel {
         // @ts-ignore
