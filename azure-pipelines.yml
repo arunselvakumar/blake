@@ -24,10 +24,6 @@ steps:
     npm run lint
   displayName: 'npm lint'
   
-- task: ArchiveFiles@2
+- task: PublishBuildArtifacts@1
   inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
