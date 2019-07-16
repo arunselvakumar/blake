@@ -23,8 +23,3 @@ steps:
 - script: |
     npm run lint
   displayName: 'npm lint'
-
-- script: |
-    npm run test
-  displayName: 'npm test'
-  continueOnError: true
