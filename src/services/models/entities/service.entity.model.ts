@@ -1,49 +1,41 @@
 import * as mongoose from 'mongoose';
-
-const pointSchema = new mongoose.Schema({
-    type: {
-        type: String,
-        enum: ['Point'],
-        required: true,
-    },
-    coordinates: {
-        type: [Number],
-        required: true,
-    },
-});
+import { CategoryEntityModel } from './category.entity.model';
+import * as pointSchema from './point.schema';
 
 export const ServiceEntitySchema = new mongoose.Schema({
     name: { type: String, required: true },
-    phone: { type: String, required: true },
+    userId: { type: String, required: true },
     upTime: { type: Number },
-    servicableDistance: { type: Number },
+    serviceableDistance: { type: Number },
     isOffline: { type: Boolean },
-    categoryId: { type: String },
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'CategorySchema' },
+    isArchived: { type: Boolean },
     location: {
         type: pointSchema,
         required: true,
     },
 });
 
-// {
-// 	"location": {
-// 		"type": "Point",
-// 		"coordinates": {
-// 			"type": [-104.9903, 39.7392]
-// 		}
-// 	},
-// }
-
 export interface ServiceEntityModel extends mongoose.Document {
+    id: string;
     name: string;
-    phone: string;
+    userId: string;
     upTime: number;
-    serviceableDistance: string;
+    serviceableDistance: number;
     isOffline: boolean;
     categoryId: string;
     location: any;
-    // {
-    //     type: { type: `Point` },
-    //     coordinates: number[],
-    // };
+    isArchived: boolean;
+}
+
+export interface ServiceCategoryModel extends mongoose.Document {
+    id: string;
+    name: string;
+    userId: string;
+    upTime: number;
+    serviceableDistance: number;
+    isOffline: boolean;
+    location: any;
+    isArchived: boolean;
+    Categories: CategoryEntityModel;
 }

@@ -10,10 +10,18 @@ import { CategorySchema } from './models/entities/category.entity.model';
 import { ServiceEntitySchema } from './models/entities/service.entity.model';
 import { CategoriesService } from './services/categories.service';
 import { ServicesService } from './services/services.service';
+import { UpdateServiceDtoValidator } from './validators/updateServiceDto.validator';
+import { ValidatorProvider } from './validators/validators.provider';
 
 @Module({
     controllers: [ServicesController, CategoriesController],
-    providers: [CreateServiceDtoValidator, CategoriesService, ServicesService],
+    providers: [
+        CreateServiceDtoValidator,
+        CategoriesService,
+        ServicesService,
+        UpdateServiceDtoValidator,
+        ValidatorProvider,
+    ],
     imports: [
         SharedModule,
         MongooseModule.forFeature([{ name: 'Category', schema: CategorySchema }, { name: 'Service', schema: ServiceEntitySchema }]),

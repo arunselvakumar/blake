@@ -1,6 +1,5 @@
-export interface CreateServiceRequestDto {
+export interface UpdateServiceRequestDto {
     readonly name: string;
-    readonly phone: string;
     readonly upTime: number;
     readonly serviceableDistance: number;
     readonly isOffline: boolean;

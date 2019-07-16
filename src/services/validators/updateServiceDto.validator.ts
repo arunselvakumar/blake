@@ -1,9 +1,10 @@
 import { IValidator, ValidatedResponse } from '../../shared/validators/validtor.interface';
-import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
+import { UpdateServiceRequestDto } from '../models/dtos/service/request/update-service.request.dto';
 
-export class CreateServiceDtoValidator implements IValidator<CreateServiceRequestDto> {
-    validate(obj: CreateServiceRequestDto): ValidatedResponse {
+export class UpdateServiceDtoValidator implements IValidator<UpdateServiceRequestDto> {
+    validate(obj: UpdateServiceRequestDto): ValidatedResponse {
         const errorMessages = [];
+
         if (obj.name == null || obj.name.trim().length <= 0) {
             errorMessages.push('name cannot be empty');
         }

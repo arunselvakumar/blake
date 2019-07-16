@@ -1,57 +1,101 @@
-import { BadRequestException, Injectable, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ServicesMapper } from '../mappers/services.mapper';
 
-import { CreateServiceDtoValidator } from '../validators/createServiceDto.validator';
+import { Model, Types } from 'mongoose';
 
-import { Model } from 'mongoose';
-
-import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
-import { ServiceEntityModel } from '../models/entities/service.entity.model';
+import { ServiceCategoryModel, ServiceEntityModel } from '../models/entities/service.entity.model';
 import { DB_ERRORS } from '../utils/constants';
 
 @Injectable()
 export class ServicesService {
     constructor(
         @InjectModel('Service')
-        private readonly serviceModel: Model<ServiceEntityModel>,
-        private readonly createServiceDtoValidator: CreateServiceDtoValidator,
-    ) { }
+        private readonly serviceModel: Model<ServiceEntityModel>) { }
 
     public async createService(
-        dtoToCreate: CreateServiceRequestDto,
-        phoneNumber: string): Promise<ServiceEntityModel[]> {
-
-        const validateResponse = this.createServiceDtoValidator.validate(dtoToCreate);
-        if (!validateResponse.isValidated) {
-            let errorMessage = ``;
-            validateResponse.errorMessages.forEach(em => {
-                errorMessage = `${errorMessage} && ${em}`;
-            });
-            throw new BadRequestException(errorMessage);
-        }
+        serviceEntity: ServiceEntityModel,
+        userId: string): Promise<ServiceEntityModel> {
 
         try {
-            const serviceEntity = ServicesMapper.mapFromCreateServiceRequestDtoToEntity(dtoToCreate);
-            serviceEntity.phone = phoneNumber;
-            const createdEntities = [];
-
-            await Promise.all(dtoToCreate.categoryIds.map(async (categoryId) => {
-                serviceEntity.categoryId = categoryId;
-                const createdEntity = await this.serviceModel.create(serviceEntity);
-                createdEntities.push(createdEntity);
-            }));
-
-            return createdEntities;
+            serviceEntity.userId = userId;
+            const createdEntity = await this.serviceModel.create(serviceEntity);
+            return createdEntity;
         } catch (e) {
             throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
         }
     }
 
-    public async updateService(entityToCreate: ServiceEntityModel): Promise<ServiceEntityModel> {
+    public async getAllService(userId: string): Promise<ServiceCategoryModel[]> {
         try {
-            return await this.serviceModel.create(entityToCreate);
-        } catch {
+            const userServices = await this.serviceModel.aggregate([{
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categoryId',
+                    foreignField: '_id',
+                    as: 'Categories',
+                },
+            },
+            { $match: { userId, isArchived: false } },
+            ]);
+
+            return userServices;
+        } catch (e) {
+            throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
+        }
+    }
+
+    public async updateService(serviceId: string, userId: string, entityToUpdate: ServiceEntityModel): Promise<ServiceEntityModel> {
+        try {
+            const updatedEntity = await this.serviceModel.findByIdAndUpdate(serviceId, entityToUpdate).exec();
+            return updatedEntity;
+        } catch (e) {
+            throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
+        }
+    }
+
+    public async deleteService(serviceId: string): Promise<void> {
+        try {
+            const service = await this.serviceModel.findById(serviceId).exec();
+            service.isArchived = true;
+            await this.serviceModel.findByIdAndUpdate(serviceId, service).exec();
+        } catch (e) {
+            throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
+        }
+    }
+
+    public async getNearbyService(
+        categoryId: string,
+        lat: number,
+        long: number,
+        skip: number,
+        withIn: number): Promise<ServiceEntityModel[]> {
+        try {
+            const nearByServices = await this.serviceModel.aggregate([
+                {
+                    $geoNear: {
+                        near: {
+                            type: 'Point',
+                            coordinates: [parseFloat(long.toString()), parseFloat(lat.toString())],
+                        },
+                        distanceField: 'dist.calculated',
+                        distanceMultiplier: 0.001,
+                        maxDistance: withIn,
+                        spherical: true,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'categoryId',
+                        foreignField: '_id',
+                        as: 'Categories',
+                    },
+                },
+                { $match: { isArchived: false, categoryId: new Types.ObjectId(categoryId) } },
+            ]).skip(skip).limit(5);
+
+            return nearByServices;
+        } catch (e) {
             throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
         }
     }
