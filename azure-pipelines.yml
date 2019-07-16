@@ -19,3 +19,12 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+
+- script: |
+    npm run lint
+  displayName: 'npm lint'
+
+- script: |
+    npm run test
+  displayName: 'npm test'
+  continueOnError: true
