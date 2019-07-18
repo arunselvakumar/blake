@@ -3,13 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Model, Types } from 'mongoose';
 
-import { ServiceCategoryEntityModel } from 'dist/services/models/entities/service.entity.model';
 import { DB_ERRORS } from '../../shared/utils/constants';
 import { ServicesMapper } from '../mappers/services.mapper';
 import { CreateServiceResponseDto } from '../models/dtos/service/response/create-service.response.dto';
+import { GetNearbyServiceResponseDto } from '../models/dtos/service/response/get-nearby-services.response.dto';
 import { GetServicesResponseDto } from '../models/dtos/service/response/get-services.response.dto';
 import { UpdateServiceResponseDto } from '../models/dtos/service/response/update-service.response.dto';
+import { NearbyServiceEntityModel } from '../models/entities/nearby-service.entity.model';
+import { ServiceCategoryEntityModel } from '../models/entities/service-category.entity.model';
 import { ServiceEntityModel } from '../models/entities/service.entity.model';
+import { DtoValidatorProvider } from '../validators/validators.provider';
 
 @Injectable()
 export class ServicesService {
@@ -17,7 +20,26 @@ export class ServicesService {
         @InjectModel('Service')
         private readonly serviceModel: Model<ServiceEntityModel>,
         @InjectModel('Service')
-        private readonly serviceCategoryModel: Model<ServiceCategoryEntityModel>) { }
+        private readonly serviceCategoryModel: Model<ServiceCategoryEntityModel>,
+        @InjectModel('Service')
+        private readonly nearbyServiceModel: Model<NearbyServiceEntityModel>,
+        private readonly validatorProvider: DtoValidatorProvider) { }
+
+    public async getAllService(userId: string): Promise<GetServicesResponseDto[]> {
+        try {
+            const serviceEntities = await this.serviceCategoryModel
+                .find({ userId, isArchived: false })
+                .populate({ path: 'category', match: { isArchived: false } });
+
+            const allServicesResponse = serviceEntities
+                .filter(service => service.category)
+                .map(service => ServicesMapper.mapGetServiceResponseFromEntity(service));
+
+            return allServicesResponse;
+        } catch (e) {
+            throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
+        }
+    }
 
     public async createService(
         serviceEntity: ServiceEntityModel,
@@ -30,22 +52,6 @@ export class ServicesService {
             const createServiceResponseDto = ServicesMapper.mapCreateServiceResponseDtoFromEntity(createdEntity);
 
             return createServiceResponseDto;
-        } catch (e) {
-            throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
-        }
-    }
-
-    public async getAllService(userId: string): Promise<GetServicesResponseDto[]> {
-        try {
-            const services = await this.serviceCategoryModel
-                .find({ userId, isArchived: false })
-                .populate({ path: 'category', match: { isArchived: false } });
-
-            const allServicesResponse = services
-                .filter(service => service.category)
-                .map(service => ServicesMapper.mapGetServiceResponseFromEntity(service));
-
-            return allServicesResponse;
         } catch (e) {
             throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
         }
@@ -65,9 +71,9 @@ export class ServicesService {
     public async deleteService(serviceId: string, userId): Promise<void> {
         try {
             await this.validateUser(serviceId, userId);
-            const service = await this.serviceModel.findById(serviceId).exec();
-            service.isArchived = true;
-            await this.serviceModel.findByIdAndUpdate(serviceId, service).exec();
+            const deletedEntity = await this.serviceModel.findById(serviceId).exec();
+            deletedEntity.isArchived = true;
+            await this.serviceModel.findByIdAndUpdate(serviceId, deletedEntity).exec();
         } catch (e) {
             throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
         }
@@ -78,9 +84,9 @@ export class ServicesService {
         lat: number,
         long: number,
         skip: number,
-        withIn: number): Promise<ServiceEntityModel[]> {
+        range: number): Promise<GetNearbyServiceResponseDto[]> {
         try {
-            const nearByServices = await this.serviceModel.aggregate([
+            const nearByServices = await this.nearbyServiceModel.aggregate([
                 {
                     $geoNear: {
                         near: {
@@ -89,18 +95,28 @@ export class ServicesService {
                         },
                         distanceField: 'dist.calculated',
                         distanceMultiplier: 0.001,
-                        maxDistance: withIn,
+                        maxDistance: range,
                         spherical: true,
                     },
                 },
                 {
                     $lookup: {
                         from: 'categories',
-                        localField: 'category',
-                        foreignField: '_id',
-                        as: 'Categories',
+                        as: 'Category',
+                        let: { category: '$category' },
+                        pipeline: [{
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$_id', '$$category'] },
+                                        { $eq: ['$isArchived', 'false'] },
+                                    ],
+                                },
+                            },
+                        }],
                     },
                 },
+                { $unwind: '$Category' },
                 {
                     $match: {
                         isArchived: false,
@@ -108,19 +124,20 @@ export class ServicesService {
                     },
                 },
             ]).skip(skip).limit(5);
-
-            return nearByServices;
+            const nearByServicesResponse = nearByServices.map(service => ServicesMapper.mapGetNearByServiceResponseFromEntity(service));
+            return nearByServicesResponse;
         } catch (e) {
-            console.log(e);
             throw new ServiceUnavailableException(DB_ERRORS.OfflineError);
         }
     }
 
-    private async validateUser(serviceId: string, userId: string) {
-        const currentService = await this.serviceModel.findById(serviceId);
+    private async validateUser(entityId: string, userId: string) {
+        const validatedResponse = await this.validatorProvider
+            .getEntityUserValidator('ServiceEntityModel')
+            .validate(this.serviceModel, entityId, userId);
 
-        if (currentService.userId !== userId) {
-            throw new NotAcceptableException('Cannot modify other user service');
+        if (!validatedResponse.isValidated) {
+            throw new NotAcceptableException(validatedResponse.errorMessages);
         }
     }
 }

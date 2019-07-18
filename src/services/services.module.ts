@@ -10,6 +10,7 @@ import { CategorySchema } from './models/entities/category.entity.model';
 import { ServiceEntitySchema } from './models/entities/service.entity.model';
 import { CategoriesService } from './services/categories.service';
 import { ServicesService } from './services/services.service';
+import { ServiceEntityUserValidator } from './validators/serviceEntityUser.validator';
 import { UpdateServiceDtoValidator } from './validators/updateServiceDto.validator';
 import { DtoValidatorProvider } from './validators/validators.provider';
 
@@ -21,11 +22,14 @@ import { DtoValidatorProvider } from './validators/validators.provider';
         ServicesService,
         UpdateServiceDtoValidator,
         DtoValidatorProvider,
+        ServiceEntityUserValidator,
     ],
     imports: [
         SharedModule,
-        MongooseModule.forFeature([{ name: 'Category', schema: CategorySchema }, { name: 'Service', schema: ServiceEntitySchema }]),
+        MongooseModule.forFeature([
+            { name: 'Category', schema: CategorySchema },
+            { name: 'Service', schema: ServiceEntitySchema }]),
         PassportModule,
     ],
 })
-export class ServicesModule {}
+export class ServicesModule { }

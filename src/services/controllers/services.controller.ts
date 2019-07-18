@@ -5,6 +5,7 @@ import { ServicesMapper } from '../mappers/services.mapper';
 import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
 import { UpdateServiceRequestDto } from '../models/dtos/service/request/update-service.request.dto';
 import { CreateServiceResponseDto } from '../models/dtos/service/response/create-service.response.dto';
+import { GetNearbyServiceResponseDto } from '../models/dtos/service/response/get-nearby-services.response.dto';
 import { GetServicesResponseDto } from '../models/dtos/service/response/get-services.response.dto';
 import { UpdateServiceResponseDto } from '../models/dtos/service/response/update-service.response.dto';
 import { ServicesService } from '../services/services.service';
@@ -79,11 +80,11 @@ export class ServicesController {
     @Get('/nearby/:categoryId')
     public async getNearyByServices(
         @Query() query,
-        @Param('categoryId') categoryId: string) {
-        const withInKm = parseInt(query.withIn, 2) * 1000; // user can give withIn in form of km (ex: withIn: 2km -> 2000m)
+        @Param('categoryId') categoryId: string): Promise<GetNearbyServiceResponseDto[]> {
+        const rangeInKm = parseInt(query.range, 2) * 1000; // user can give withIn in form of km (ex: withIn: 2km -> 2000m)
         const skipResult = parseInt(query.skip, 2);
         return await this.servicesService
-            .getNearbyService(categoryId, query.lat, query.long, skipResult, withInKm);
+            .getNearbyService(categoryId, query.lat, query.long, skipResult, rangeInKm);
     }
 
     private validate(validatorKey: string, dto: any) {
