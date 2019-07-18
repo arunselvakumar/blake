@@ -1,11 +1,11 @@
-export interface GetServicesResponseDto {
+export interface CreateServiceResponseDto {
     id: string;
     name: string;
     userId: string;
     upTime: number;
     serviceableDistance: number;
     isOffline: boolean;
-    category: Category;
+    category: string;
     location: {
         lat: number;
         long: number;
@@ -13,8 +13,3 @@ export interface GetServicesResponseDto {
     isArchived: boolean;
 }
 
-export interface Category {
-    id: string;
-    name: string;
-    description: string;
-}

@@ -7,7 +7,7 @@ import { IValidator } from '../../shared/validators/validtor.interface';
 import { UpdateServiceDtoValidator } from './updateServiceDto.validator';
 
 @Injectable()
-export class ValidatorProvider implements IValidatorProvider {
+export class DtoValidatorProvider implements IValidatorProvider {
 
     private validatorsMap: Map<string, IValidator<any>> = new Map<string, IValidator<any>>();
     constructor(

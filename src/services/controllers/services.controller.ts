@@ -4,21 +4,23 @@ import { AuthGuard } from '@nestjs/passport';
 import { ServicesMapper } from '../mappers/services.mapper';
 import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
 import { UpdateServiceRequestDto } from '../models/dtos/service/request/update-service.request.dto';
-import { ServiceCategoryModel, ServiceEntityModel } from '../models/entities/service.entity.model';
+import { CreateServiceResponseDto } from '../models/dtos/service/response/create-service.response.dto';
+import { GetServicesResponseDto } from '../models/dtos/service/response/get-services.response.dto';
+import { UpdateServiceResponseDto } from '../models/dtos/service/response/update-service.response.dto';
 import { ServicesService } from '../services/services.service';
-import { ValidatorProvider } from '../validators/validators.provider';
+import { DtoValidatorProvider } from '../validators/validators.provider';
 
 @Controller('api/services')
 export class ServicesController {
     constructor(
         private readonly servicesService: ServicesService,
-        private readonly validatorProvider: ValidatorProvider) { }
+        private readonly validatorProvider: DtoValidatorProvider) { }
 
     @Post()
     @UseGuards(AuthGuard('bearer'))
-    async createService(
+    public async createService(
         @Req() request: Request,
-        @Body() createServiceRequestDto: CreateServiceRequestDto): Promise<ServiceEntityModel> {
+        @Body() createServiceRequestDto: CreateServiceRequestDto): Promise<CreateServiceResponseDto> {
         // @ts-ignore
         const { user } = request;
 
@@ -26,15 +28,16 @@ export class ServicesController {
 
         const serviceEntity = ServicesMapper.mapFromCreateServiceRequestDtoToEntity(createServiceRequestDto);
 
-        const createdServices = await this.servicesService.createService(
+        const serviceResult = await this.servicesService.createService(
             serviceEntity,
             user.id);
-        return createdServices;
+
+        return serviceResult;
     }
 
     @Get()
     @UseGuards(AuthGuard('bearer'))
-    async getAllServices(@Req() request: Request): Promise<ServiceCategoryModel[]> {
+    public async getAllServices(@Req() request: Request): Promise<GetServicesResponseDto[]> {
         // @ts-ignore
         const { user } = request;
         const services = await this.servicesService.getAllService(user.id);
@@ -43,10 +46,10 @@ export class ServicesController {
 
     @Patch(':serviceId')
     @UseGuards(AuthGuard('bearer'))
-    async updateService(
+    public async updateService(
         @Param('serviceId') serviceId: string,
         @Req() request: Request,
-        @Body() updateServiceRequestDto: UpdateServiceRequestDto): Promise<ServiceEntityModel> {
+        @Body() updateServiceRequestDto: UpdateServiceRequestDto): Promise<UpdateServiceResponseDto> {
         // @ts-ignore
         const { user } = request;
 
@@ -58,22 +61,23 @@ export class ServicesController {
             serviceId,
             user.id,
             serviceEntity);
+
         return updatedServices;
     }
 
     @Delete(':serviceId')
     @UseGuards(AuthGuard('bearer'))
-    async deleteService(
+    public async deleteService(
         @Param('serviceId') serviceId: string,
         @Req() request: Request): Promise<void> {
         // @ts-ignore
         const { user } = request;
 
-        return await this.servicesService.deleteService(serviceId);
+        return await this.servicesService.deleteService(serviceId, user.id);
     }
 
     @Get('/nearby/:categoryId')
-    async getNearyByServices(
+    public async getNearyByServices(
         @Query() query,
         @Param('categoryId') categoryId: string) {
         const withInKm = parseInt(query.withIn, 2) * 1000; // user can give withIn in form of km (ex: withIn: 2km -> 2000m)

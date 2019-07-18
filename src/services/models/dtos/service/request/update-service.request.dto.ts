@@ -3,7 +3,7 @@ export interface UpdateServiceRequestDto {
     readonly upTime: number;
     readonly serviceableDistance: number;
     readonly isOffline: boolean;
-    readonly categoryId: string;
+    readonly category: string;
     readonly location: {
         lat: number;
         long: number

@@ -18,7 +18,7 @@ export class CreateServiceDtoValidator implements IValidator<CreateServiceReques
             errorMessages.push('location lat should between -90 to 90 and long should between -180 to 180');
         }
 
-        if (obj.categoryId == null || obj.categoryId.trim().length <= 0) {
+        if (obj.category == null || obj.category.trim().length <= 0) {
             errorMessages.push('atleast one service should be given for a service provider');
         }
 

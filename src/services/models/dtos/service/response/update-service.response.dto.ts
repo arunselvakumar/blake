@@ -1,20 +1,14 @@
-export interface GetServicesResponseDto {
+export interface UpdateServiceResponseDto {
     id: string;
     name: string;
     userId: string;
     upTime: number;
     serviceableDistance: number;
     isOffline: boolean;
-    category: Category;
+    category: string;
     location: {
         lat: number;
         long: number;
     };
     isArchived: boolean;
-}
-
-export interface Category {
-    id: string;
-    name: string;
-    description: string;
 }

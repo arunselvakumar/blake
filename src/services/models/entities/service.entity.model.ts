@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { CategoryEntityModel } from './category.entity.model';
 import * as pointSchema from './point.schema';
 
 export const ServiceEntitySchema = new mongoose.Schema({
@@ -8,7 +7,7 @@ export const ServiceEntitySchema = new mongoose.Schema({
     upTime: { type: Number },
     serviceableDistance: { type: Number },
     isOffline: { type: Boolean },
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'CategorySchema' },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
     isArchived: { type: Boolean },
     location: {
         type: pointSchema,
@@ -23,19 +22,24 @@ export interface ServiceEntityModel extends mongoose.Document {
     upTime: number;
     serviceableDistance: number;
     isOffline: boolean;
-    categoryId: string;
+    category: string;
     location: any;
     isArchived: boolean;
 }
 
-export interface ServiceCategoryModel extends mongoose.Document {
+export interface ServiceCategoryEntityModel extends mongoose.Document {
     id: string;
     name: string;
-    userId: string;
     upTime: number;
     serviceableDistance: number;
+    category: Category;
+    isArchived: boolean;
     isOffline: boolean;
     location: any;
-    isArchived: boolean;
-    Categories: CategoryEntityModel;
+    userId: string;
+}
+
+export interface Category {
+    name: string;
+    description: string;
 }

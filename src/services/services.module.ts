@@ -11,7 +11,7 @@ import { ServiceEntitySchema } from './models/entities/service.entity.model';
 import { CategoriesService } from './services/categories.service';
 import { ServicesService } from './services/services.service';
 import { UpdateServiceDtoValidator } from './validators/updateServiceDto.validator';
-import { ValidatorProvider } from './validators/validators.provider';
+import { DtoValidatorProvider } from './validators/validators.provider';
 
 @Module({
     controllers: [ServicesController, CategoriesController],
@@ -20,7 +20,7 @@ import { ValidatorProvider } from './validators/validators.provider';
         CategoriesService,
         ServicesService,
         UpdateServiceDtoValidator,
-        ValidatorProvider,
+        DtoValidatorProvider,
     ],
     imports: [
         SharedModule,
