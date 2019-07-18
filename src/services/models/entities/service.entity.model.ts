@@ -26,20 +26,3 @@ export interface ServiceEntityModel extends mongoose.Document {
     location: any;
     isArchived: boolean;
 }
-
-export interface ServiceCategoryEntityModel extends mongoose.Document {
-    id: string;
-    name: string;
-    upTime: number;
-    serviceableDistance: number;
-    category: Category;
-    isArchived: boolean;
-    isOffline: boolean;
-    location: any;
-    userId: string;
-}
-
-export interface Category {
-    name: string;
-    description: string;
-}

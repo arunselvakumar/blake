@@ -3,11 +3,12 @@ import { ServiceCategoryEntityModel } from 'dist/services/models/entities/servic
 import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
 import { UpdateServiceRequestDto } from '../models/dtos/service/request/update-service.request.dto';
 import { CreateServiceResponseDto } from '../models/dtos/service/response/create-service.response.dto';
+import { GetNearbyServiceResponseDto } from '../models/dtos/service/response/get-nearby-services.response.dto';
 import { GetServicesResponseDto } from '../models/dtos/service/response/get-services.response.dto';
 import { UpdateServiceResponseDto } from '../models/dtos/service/response/update-service.response.dto';
+import { NearbyServiceEntityModel } from '../models/entities/nearby-service.entity.model';
 import { ServiceEntityModel } from '../models/entities/service.entity.model';
 
-@Injectable()
 export class ServicesMapper {
     public static mapFromCreateServiceRequestDtoToEntity(
         createServiceRequestDto: CreateServiceRequestDto): ServiceEntityModel {
@@ -88,6 +89,29 @@ export class ServicesMapper {
             },
             isArchived: serviceEntityModel.isArchived,
             isOffline: serviceEntityModel.isOffline,
+            location: {
+                lat: serviceEntityModel.location.coordinates[0],
+                long: serviceEntityModel.location.coordinates[1],
+            },
+        };
+    }
+
+    public static mapGetNearByServiceResponseFromEntity(
+        serviceEntityModel: NearbyServiceEntityModel): GetNearbyServiceResponseDto {
+        // @ts-ignore
+        return {
+            id: serviceEntityModel._id,
+            name: serviceEntityModel.name,
+            upTime: serviceEntityModel.upTime,
+            isOffline: serviceEntityModel.isOffline,
+            isArchived: serviceEntityModel.isArchived,
+            distance: serviceEntityModel.dist.calculated,
+            serviceableDistance: serviceEntityModel.serviceableDistance,
+            category: {
+                id: serviceEntityModel.Category._id,
+                name: serviceEntityModel.Category.name,
+                description: serviceEntityModel.Category.description,
+            },
             location: {
                 lat: serviceEntityModel.location.coordinates[0],
                 long: serviceEntityModel.location.coordinates[1],

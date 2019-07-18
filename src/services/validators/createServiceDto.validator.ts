@@ -1,24 +1,25 @@
-import { IValidator, ValidatedResponse } from '../../shared/validators/validtor.interface';
+import { ValidatedResponse } from '../../shared/validators/validatedResponse';
+import { IValidator } from '../../shared/validators/validtor.interface';
 import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
 
 export class CreateServiceDtoValidator implements IValidator<CreateServiceRequestDto> {
-    validate(obj: CreateServiceRequestDto): ValidatedResponse {
+    validate(createserviceRequest: CreateServiceRequestDto): ValidatedResponse {
         const errorMessages = [];
-        if (obj.name == null || obj.name.trim().length <= 0) {
+        if (createserviceRequest.name === null || createserviceRequest.name.trim().length <= 0) {
             errorMessages.push('name cannot be empty');
         }
 
-        if (obj.location == null) {
+        if (createserviceRequest.location === null) {
             errorMessages.push('location cannot be empty');
         }
 
-        if (obj.location != null &&
-            (obj.location.lat < -90 || obj.location.lat > 90) &&
-            (obj.location.long < -180 || obj.location.long > 180)) {
+        if (createserviceRequest.location !== null &&
+            (createserviceRequest.location.lat < -90 || createserviceRequest.location.lat > 90) &&
+            (createserviceRequest.location.long < -180 || createserviceRequest.location.long > 180)) {
             errorMessages.push('location lat should between -90 to 90 and long should between -180 to 180');
         }
 
-        if (obj.category == null || obj.category.trim().length <= 0) {
+        if (createserviceRequest.category === null || createserviceRequest.category.trim().length <= 0) {
             errorMessages.push('atleast one service should be given for a service provider');
         }
 

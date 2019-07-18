@@ -1,16 +1,17 @@
 import { GetCategoryResponseDto } from '../../category/response/get-category.response.dto';
 
-export interface GetServicesResponseDto {
+export interface GetNearbyServiceResponseDto  {
     id: string;
     name: string;
-    userId: string;
     upTime: number;
     serviceableDistance: number;
+    isArchived: boolean;
     isOffline: boolean;
-    category: GetCategoryResponseDto;
     location: {
         lat: number;
         long: number;
     };
-    isArchived: boolean;
+    userId: string;
+    distance: number;
+    category: GetCategoryResponseDto;
 }
