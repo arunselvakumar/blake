@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ServiceCategoryEntityModel } from 'dist/services/models/entities/service.entity.model';
+import { ServiceCategoryEntityModel } from '../models/entities/service-category.entity.model';
 import { CreateServiceRequestDto } from '../models/dtos/service/request/create-service.requrest.dto';
 import { UpdateServiceRequestDto } from '../models/dtos/service/request/update-service.request.dto';
 import { CreateServiceResponseDto } from '../models/dtos/service/response/create-service.response.dto';
